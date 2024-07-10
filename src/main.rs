@@ -1,10 +1,16 @@
+mod db;
+mod models;
+mod schema;
+
 use askama::Template;
 use axum::http::StatusCode;
 use axum::response::{Html, IntoResponse, Response};
 use axum::Router;
 use axum::routing::get;
+use diesel::{QueryDsl, RunQueryDsl, SelectableHelper};
 use tower_http::services::ServeDir;
 use tracing::info;
+use crate::models::Location;
 
 #[tokio::main]
 async fn main() {
@@ -31,6 +37,16 @@ async fn main() {
 }
 
 async fn index() -> impl IntoResponse {
+    use self::schema::locations::dsl::*;
+
+    let connection = &mut db::connect();
+    let results = locations.limit(10).select(Location::as_select()).load(connection).expect("Error loading locations");
+
+    println!("Displaying {} locations", results.len());
+    for location in results {
+        println!("{} - {} - {}", location.id, location.name, location.description);
+    }
+
     let template = IndexTemplate {};
     HtmlTemplate(template)
 }
