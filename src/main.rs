@@ -42,18 +42,22 @@ async fn index() -> impl IntoResponse {
     let connection = &mut db::connect();
     let results = locations.limit(10).select(Location::as_select()).load(connection).expect("Error loading locations");
 
-    println!("Displaying {} locations", results.len());
-    for location in results {
-        println!("{} - {} - {}", location.id, location.name, location.description);
-    }
+    // println!("Displaying {} locations", results.len());
+    // for location in results {
+    //     println!("{} - {} - {}", location.id, location.name, location.description);
+    // }
 
-    let template = IndexTemplate {};
+    let template = IndexTemplate {
+        locations: results
+    };
     HtmlTemplate(template)
 }
 
 #[derive(Template)]
 #[template(path = "index.html")]
-struct IndexTemplate;
+struct IndexTemplate {
+    locations: Vec<Location>,
+}
 
 /// Wrapper type to encapsulate HTML parsed by askama into valid HTML for axum to serve.
 struct HtmlTemplate<T>(T);

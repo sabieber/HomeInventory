@@ -12,5 +12,10 @@
 <h1 class="text-3xl font-bold underline">
     Hello HomeInventory!
 </h1>
+<ul>
+    {% for location in locations %}
+    <li>{{ location.name|e }} -  {{ location.description|e }}</li>
+    {% endfor %}
+</ul>
 </body>
 </html>
