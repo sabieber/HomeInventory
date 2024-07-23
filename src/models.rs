@@ -1,3 +1,4 @@
+use diesel::data_types::PgTimestamp;
 use diesel::prelude::*;
 
 #[derive(Queryable, Selectable)]
@@ -6,5 +7,7 @@ use diesel::prelude::*;
 pub struct Location {
     pub id: i32,
     pub name: String,
-    pub description: String
+    pub description: String,
+    pub created_at: PgTimestamp,
+    pub updated_at: PgTimestamp,
 }
